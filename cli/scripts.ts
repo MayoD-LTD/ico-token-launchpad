@@ -22,7 +22,7 @@ import {
   withdrawCostTx,
 } from '../lib/scripts';
 import { IcoLaunchpad } from '../target/types/ico_launchpad';
-import { CreateIcoParams } from '../lib/types';
+import { CreateIcoInputs, CreateIcoParams } from '../lib/types';
 import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 let solConnection: Connection = null;
@@ -146,7 +146,7 @@ export const changeConfig = async (paused: boolean) => {
 export const createIco = async (
   icoMint: PublicKey,
   costMint: PublicKey,
-  params: CreateIcoParams,
+  params: CreateIcoInputs,
   icoIsToken22: boolean = false, // need true if token is spl 2022
   costIsToken22: boolean = false // need true if token is spl 2022
 ) => {
@@ -154,7 +154,22 @@ export const createIco = async (
     payer.publicKey,
     icoMint,
     costMint,
-    params,
+    {
+      amount: new anchor.BN(params.amount),
+      startPrice: new anchor.BN(params.startPrice),
+      endPrice: new anchor.BN(params.endPrice),
+      startDate: new anchor.BN(params.startDate),
+      endDate: new anchor.BN(params.endDate),
+
+      bonusReserve: new anchor.BN(params.bonusReserve),
+      bonusPercentage: params.bonusPercentage,
+      bonusActivator: params.bonusActivator,
+
+      unlockPercentage: params.unlockPercentage,
+      cliffPeriod: new anchor.BN(params.cliffPeriod),
+      vestingPercentage: params.vestingPercentage,
+      vestingInterval: new anchor.BN(params.vestingInterval),
+    },
     program,
     icoIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID,
     costIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
@@ -348,12 +363,12 @@ export const getUserPurchaseInfo = async (userPurchase: PublicKey) => {
 };
 
 export const getAllPurchases = async ({
-  owner,
+  buyer,
   ico,
 }: {
-  owner?: PublicKey;
+  buyer?: PublicKey;
   ico?: PublicKey;
 }) => {
-  const data = await findPurchases({ owner, ico }, program);
+  const data = await findPurchases({ buyer, ico }, program);
   return data;
 };

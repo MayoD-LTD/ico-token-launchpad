@@ -365,7 +365,7 @@ export const getUserPurchaseState = async (
 };
 
 export const findPurchases = async (
-  { owner, ico }: { owner?: PublicKey; ico?: PublicKey },
+  { buyer, ico }: { buyer?: PublicKey; ico?: PublicKey },
   program: anchor.Program<IcoLaunchpad>
 ) => {
   let filters: anchor.web3.GetProgramAccountsFilter[] = [
@@ -374,9 +374,9 @@ export const findPurchases = async (
     },
   ];
 
-  if (owner) {
+  if (buyer) {
     filters.push({
-      memcmp: { offset: 16, bytes: owner.toBase58() },
+      memcmp: { offset: 16, bytes: buyer.toBase58() },
     });
   }
   if (ico) {

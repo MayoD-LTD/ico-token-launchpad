@@ -4,13 +4,15 @@
   "license": "ISC",  
   "keywords": ["solana-program", "solana-token", "spl-token", "spl-token-2022", "anchor-lang", "launchpad", "solana-web3", "typescript"],
   "scripts": {
+    "ts-node": "ts-node ./cli/command.ts",
     "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
     "@solana/spl-token": "^0.3.8",
-    "@solana/web3.js": "^1.77.3"
+    "@solana/web3.js": "^1.77.3",
+    "commander": "^9.5.0"
   },
   "devDependencies": {
     "chai": "^4.3.4",

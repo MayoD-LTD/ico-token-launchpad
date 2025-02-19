@@ -6,15 +6,15 @@ solana_version = "1.18.18"
 resolution = true
 skip-lint = false
 
-[programs.localnet]
+[programs.devnet]
 ico_launchpad = "373N2AQZikw4v5w1dq2TrWdQDRh87jhj93zBdGH25CVX"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
-wallet = "../fushuma-deploy.json"
+cluster = "devnet"
+wallet = "../deploy.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

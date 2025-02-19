@@ -71,3 +71,20 @@ export interface CreateIcoParams {
   vestingPercentage: number;
   vestingInterval: anchor.BN;
 }
+
+export interface CreateIcoInputs {
+  amount: string;
+  startPrice: string;
+  endPrice: string;
+  startDate: number;
+  endDate: number;
+
+  bonusReserve: string;
+  bonusPercentage: number;
+  bonusActivator: number;
+
+  unlockPercentage: number;
+  cliffPeriod: number;
+  vestingPercentage: number;
+  vestingInterval: number;
+}

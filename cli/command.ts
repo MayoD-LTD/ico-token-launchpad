@@ -6,19 +6,17 @@ import {
   initProject,
   setClusterConfig,
   changeConfig,
-  createMarket,
-  closeMarket,
-  createOpenOrders,
-  placeOrder,
-  cancelOrder,
-  takeOrder,
-  getMarketInfo,
-  getUserOrdersInfo,
-  getOrderBooksInfo,
-  getAllMarkets,
-  partialTakeOrder,
+  createIco,
+  closeIco,
+  buyToken,
+  claim,
+  withdrawCost,
+  rescueToken,
+  getIcoInfo,
+  getAllICOs,
+  getUserPurchaseInfo,
+  getAllPurchases,
 } from './scripts';
-import { sideFromStr } from '../lib/types';
 
 // program.version('0.0.1');
 
@@ -37,10 +35,8 @@ programCommand('status')
 
 programCommand('init')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .requiredOption('-opu, --order_per_user <number>')
-  .requiredOption('-opb, --order_per_book <number>')
   .action(async (directory, cmd) => {
-    const { env, keypair, rpc, order_per_book, order_per_user } = cmd.opts();
+    const { env, keypair, rpc } = cmd.opts();
 
     console.log('Solana Cluster:', env);
     console.log('Keypair Path:', keypair);
@@ -48,7 +44,7 @@ programCommand('init')
 
     await setClusterConfig(env, keypair, rpc);
 
-    await initProject(Number(order_per_user), Number(order_per_book));
+    await initProject();
   });
 
 programCommand('change-admin')
@@ -68,10 +64,9 @@ programCommand('change-admin')
 
 programCommand('change-config')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .option('-opu, --order_per_user <number>')
-  .option('-opb, --order_per_book <number>')
+  .requiredOption('-p, --paused <boolean>')
   .action(async (directory, cmd) => {
-    const { env, keypair, rpc, order_per_book, order_per_user } = cmd.opts();
+    const { env, keypair, rpc, paused } = cmd.opts();
 
     console.log('Solana Cluster:', env);
     console.log('Keypair Path:', keypair);
@@ -79,37 +74,124 @@ programCommand('change-config')
 
     await setClusterConfig(env, keypair, rpc);
 
-    await changeConfig(
-      order_per_user ? Number(order_per_user) : undefined,
-      order_per_book ? Number(order_per_book) : undefined
+    await changeConfig(paused === 'true');
+  });
+
+programCommand('create-ico')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .requiredOption('-i --ico_mint <string>')
+  .option(
+    '-ip --ico_is_token22 <boolean>',
+    'should true if ico mint is token 2022'
+  )
+  .requiredOption('-c --cost_mint <string>')
+  .option(
+    '-cp --cost_is_token22 <boolean>',
+    'should true if cost mint is token 2022'
+  )
+  .requiredOption('-m --amount <number>', 'ico token amount to sell')
+  .requiredOption(
+    '-stp --start_price <number>',
+    'price of 1 token in cost tokens'
+  )
+  .requiredOption(
+    '-enp --end_price <number>',
+    'if 0 then price is fixed, else price grows liner from startPrice to endPrice based on sold tokens'
+  )
+  .requiredOption(
+    '-std --start_date <number>',
+    'timestamp when ICO starts. The date must be in future'
+  )
+  .requiredOption(
+    '-end --end_date <number>',
+    'timestamp when ICO ends, if 0 then ICO will be active until sell all tokens'
+  )
+  .requiredOption(
+    '-br --bonus_reserve <number>',
+    'amount of tokens that will be used for bonus'
+  )
+  .requiredOption(
+    '-bp --bonus_percentage <number>',
+    'percent of bonus (with 2 decimals) which will be added to bought amount'
+  )
+  .requiredOption(
+    '-ba --bonus_activator <number>',
+    'percent of total ICO tokens that should be bought to activate bonus (with 2 decimals)'
+  )
+  .requiredOption(
+    '-up --unlock_percentage <number>',
+    'percentage (with 2 decimals) of initially unlocked token'
+  )
+  .requiredOption('-cfp --cliff_period <number>', 'cliff period (in seconds)')
+  .requiredOption(
+    '-vp --vesting_percentage <number>',
+    'percentage (with 2 decimals) of locked tokens will be unlocked every interval'
+  )
+  .requiredOption(
+    '-vi --vesting_interval <number>',
+    'interval (in seconds) of vesting'
+  )
+  .action(async (directory, cmd) => {
+    const {
+      env,
+      keypair,
+      rpc,
+      ico_mint,
+      cost_mint,
+      ico_is_token22,
+      cost_is_token22,
+      amount,
+      start_price,
+      end_price,
+      start_date,
+      end_date,
+      bonus_reserve,
+      bonus_percentage,
+      bonus_activator,
+      unlock_percentage,
+      cliff_period,
+      vesting_percentage,
+      vesting_interval,
+    } = cmd.opts();
+
+    console.log('Solana Cluster:', env);
+    console.log('Keypair Path:', keypair);
+    console.log('RPC URL:', rpc);
+    await setClusterConfig(env, keypair, rpc);
+
+    await createIco(
+      new PublicKey(ico_mint),
+      new PublicKey(cost_mint),
+      {
+        amount: amount as string,
+        startPrice: start_price as string,
+        endPrice: end_price as string,
+        startDate: Number(start_date),
+        endDate: Number(end_date),
+
+        bonusReserve: bonus_reserve as string,
+        bonusPercentage: Number(bonus_percentage),
+        bonusActivator: Number(bonus_activator),
+
+        unlockPercentage: Number(unlock_percentage),
+        cliffPeriod: Number(cliff_period),
+        vestingPercentage: Number(vesting_percentage),
+        vestingInterval: Number(vesting_interval),
+      },
+      !ico_is_token22 ? undefined : true,
+      !cost_is_token22 ? undefined : true
     );
   });
 
-programCommand('create-market')
+programCommand('close-ico')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .requiredOption('-b --base_mint <string>')
-  .requiredOption('-q --quote_mint <string>')
-  .requiredOption('-n --name <string>')
+  .requiredOption('-i, --ico <string>', 'ico PDA address')
+  .option(
+    '-ip --ico_is_token22 <boolean>',
+    'should true if ico mint is token 2022'
+  )
   .action(async (directory, cmd) => {
-    const { env, keypair, rpc, base_mint, quote_mint, name } = cmd.opts();
-
-    console.log('Solana Cluster:', env);
-    console.log('Keypair Path:', keypair);
-    console.log('RPC URL:', rpc);
-    await setClusterConfig(env, keypair, rpc);
-
-    await createMarket(
-      new PublicKey(base_mint),
-      new PublicKey(quote_mint),
-      name
-    );
-  });
-
-programCommand('close-market')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .requiredOption('-m, --market <string>')
-  .action(async (directory, cmd) => {
-    const { env, keypair, rpc, market } = cmd.opts();
+    const { env, keypair, rpc, ico, ico_is_token22 } = cmd.opts();
 
     console.log('Solana Cluster:', env);
     console.log('Keypair Path:', keypair);
@@ -117,100 +199,23 @@ programCommand('close-market')
 
     await setClusterConfig(env, keypair, rpc);
 
-    await closeMarket(new PublicKey(market));
+    await closeIco(new PublicKey(ico), !ico_is_token22 ? undefined : true);
   });
 
-programCommand('create-user-orders')
+programCommand('buy-token')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .requiredOption('-m, --market <string>')
+  .requiredOption('-i, --ico <string>')
+  .requiredOption('-a, --amount <number>', 'amount to buy ico tokens')
+  .option(
+    '-ip --ico_is_token22 <boolean>',
+    'should true if ico mint is token 2022'
+  )
+  .option(
+    '-cp --cost_is_token22 <boolean>',
+    'should true if cost mint is token 2022'
+  )
   .action(async (directory, cmd) => {
-    const { env, keypair, rpc, market } = cmd.opts();
-
-    console.log('Solana Cluster:', env);
-    console.log('Keypair Path:', keypair);
-    console.log('RPC URL:', rpc);
-
-    await setClusterConfig(env, keypair, rpc);
-
-    await createOpenOrders(new PublicKey(market));
-  });
-
-programCommand('place-order')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .requiredOption('-m, --market <string>')
-  .requiredOption('-s, --side <string>') // bid or ask
-  .requiredOption('-p, --price <number>')
-  .requiredOption('-q, --quantity <number>')
-  .action(async (directory, cmd) => {
-    const { env, keypair, rpc, market, side, price, quantity } = cmd.opts();
-
-    console.log('Solana Cluster:', env);
-    console.log('Keypair Path:', keypair);
-    console.log('RPC URL:', rpc);
-
-    await setClusterConfig(env, keypair, rpc);
-
-    await placeOrder(
-      new PublicKey(market),
-      sideFromStr(side),
-      Number(price),
-      Number(quantity)
-    );
-  });
-
-programCommand('cancel-order')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .requiredOption('-m, --market <string>')
-  .requiredOption('-s, --side <string>')
-  .requiredOption('-o, --order_id <number>')
-  .action(async (directory, cmd) => {
-    const { env, keypair, rpc, market, side, order_id } = cmd.opts();
-
-    console.log('Solana Cluster:', env);
-    console.log('Keypair Path:', keypair);
-    console.log('RPC URL:', rpc);
-
-    await setClusterConfig(env, keypair, rpc);
-
-    await cancelOrder(
-      new PublicKey(market),
-      sideFromStr(side),
-      Number(order_id)
-    );
-  });
-
-programCommand('take-order')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .requiredOption('-m, --market <string>')
-  .requiredOption('-a, --maker <string>')
-  .requiredOption('-s, --side <string>')
-  .requiredOption('-o, --order_id <number>')
-  .action(async (directory, cmd) => {
-    const { env, keypair, rpc, market, maker, side, order_id } = cmd.opts();
-
-    console.log('Solana Cluster:', env);
-    console.log('Keypair Path:', keypair);
-    console.log('RPC URL:', rpc);
-
-    await setClusterConfig(env, keypair, rpc);
-
-    await takeOrder(
-      new PublicKey(market),
-      new PublicKey(maker),
-      sideFromStr(side),
-      Number(order_id)
-    );
-  });
-
-programCommand('partial-take-order')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .requiredOption('-m, --market <string>')
-  .requiredOption('-a, --maker <string>')
-  .requiredOption('-s, --side <string>')
-  .requiredOption('-o, --order_id <number>')
-  .requiredOption('-q, --quantity <number>')
-  .action(async (directory, cmd) => {
-    const { env, keypair, rpc, market, maker, side, order_id, quantity } =
+    const { env, keypair, rpc, ico, amount, ico_is_token22, cost_is_token22 } =
       cmd.opts();
 
     console.log('Solana Cluster:', env);
@@ -219,20 +224,25 @@ programCommand('partial-take-order')
 
     await setClusterConfig(env, keypair, rpc);
 
-    await partialTakeOrder(
-      new PublicKey(market),
-      new PublicKey(maker),
-      sideFromStr(side),
-      Number(order_id),
-      Number(quantity)
+    await buyToken(
+      new PublicKey(ico),
+      amount as string,
+      !ico_is_token22 ? undefined : true,
+      !cost_is_token22 ? undefined : true
     );
   });
 
-programCommand('market')
-  .requiredOption('-m, --market <string>')
+programCommand('claim')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .requiredOption('-i, --ico <string>')
+  .requiredOption('-u, --user_purchase <string>')
+  .option(
+    '-ip --ico_is_token22 <boolean>',
+    'should true if ico mint is token 2022'
+  )
   .action(async (directory, cmd) => {
-    const { env, keypair, rpc, market } = cmd.opts();
+    const { env, keypair, rpc, ico, user_purchase, ico_is_token22 } =
+      cmd.opts();
 
     console.log('Solana Cluster:', env);
     console.log('Keypair Path:', keypair);
@@ -240,36 +250,22 @@ programCommand('market')
 
     await setClusterConfig(env, keypair, rpc);
 
-    console.log(await getMarketInfo(new PublicKey(market)));
-  });
-
-programCommand('all-markets')
-  .option('-b, --base <string>')
-  .option('-q, --quote <string>')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .action(async (directory, cmd) => {
-    const { env, keypair, rpc, base, quote } = cmd.opts();
-
-    console.log('Solana Cluster:', env);
-    console.log('Keypair Path:', keypair);
-    console.log('RPC URL:', rpc);
-
-    await setClusterConfig(env, keypair, rpc);
-
-    console.log(
-      await getAllMarkets({
-        base: base ? new PublicKey(base) : undefined,
-        quote: quote ? new PublicKey(quote) : undefined,
-      })
+    await claim(
+      new PublicKey(ico),
+      new PublicKey(user_purchase),
+      !ico_is_token22 ? undefined : true
     );
   });
 
-programCommand('user-orders')
-  .requiredOption('-m, --market <string>')
-  .requiredOption('-a, --user_address <string>')
+programCommand('withdraw-cost')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .requiredOption('-i, --ico <string>')
+  .option(
+    '-cp --cost_is_token22 <boolean>',
+    'should true if cost mint is token 2022'
+  )
   .action(async (directory, cmd) => {
-    const { env, keypair, rpc, market, user_address } = cmd.opts();
+    const { env, keypair, rpc, ico, cost_is_token22 } = cmd.opts();
 
     console.log('Solana Cluster:', env);
     console.log('Keypair Path:', keypair);
@@ -277,19 +273,74 @@ programCommand('user-orders')
 
     await setClusterConfig(env, keypair, rpc);
 
-    console.log(
-      await getUserOrdersInfo(
-        new PublicKey(market),
-        new PublicKey(user_address)
-      )
+    await withdrawCost(new PublicKey(ico), !cost_is_token22 ? undefined : true);
+  });
+
+programCommand('rescue-token')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .requiredOption('-i, --ico <string>')
+  .option(
+    '-ip --ico_is_token22 <boolean>',
+    'should true if ico mint is token 2022'
+  )
+  .action(async (directory, cmd) => {
+    const { env, keypair, rpc, ico, ico_is_token22 } = cmd.opts();
+
+    console.log('Solana Cluster:', env);
+    console.log('Keypair Path:', keypair);
+    console.log('RPC URL:', rpc);
+
+    await setClusterConfig(env, keypair, rpc);
+
+    await rescueToken(new PublicKey(ico), !ico_is_token22 ? undefined : true);
+  });
+
+programCommand('get-ico')
+  .requiredOption('-i, --ico <string>')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .action(async (directory, cmd) => {
+    const { env, keypair, rpc, ico } = cmd.opts();
+
+    console.log('Solana Cluster:', env);
+    console.log('Keypair Path:', keypair);
+    console.log('RPC URL:', rpc);
+
+    await setClusterConfig(env, keypair, rpc);
+
+    console.log(await getIcoInfo(new PublicKey(ico)));
+  });
+
+programCommand('all-icos')
+  .option('-o, --owner <string>', 'filter by ICO pot owner')
+  .option('-i, --ico_mint <string>', 'filter by ICO token mint')
+  .option('-c, --cost_mint <string>', 'filter by cost token mint')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .action(async (directory, cmd) => {
+    const { env, keypair, rpc, owner, ico_mint, cost_mint } = cmd.opts();
+
+    console.log('Solana Cluster:', env);
+    console.log('Keypair Path:', keypair);
+    console.log('RPC URL:', rpc);
+
+    await setClusterConfig(env, keypair, rpc);
+
+    console.dir(
+      await getAllICOs({
+        owner: owner ? new PublicKey(owner) : undefined,
+        icoMint: ico_mint ? new PublicKey(ico_mint) : undefined,
+        costMint: cost_mint ? new PublicKey(cost_mint) : undefined,
+      }),
+      {
+        depth: null,
+      }
     );
   });
 
-programCommand('order-book')
-  .requiredOption('-m, --market <string>')
+programCommand('user-purchase')
+  .requiredOption('-a, --user_purchase <string>')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   .action(async (directory, cmd) => {
-    const { env, keypair, rpc, market } = cmd.opts();
+    const { env, keypair, rpc, market, user_purchase } = cmd.opts();
 
     console.log('Solana Cluster:', env);
     console.log('Keypair Path:', keypair);
@@ -297,9 +348,31 @@ programCommand('order-book')
 
     await setClusterConfig(env, keypair, rpc);
 
-    console.dir(await getOrderBooksInfo(new PublicKey(market)), {
-      depth: null,
-    });
+    console.log(await getUserPurchaseInfo(new PublicKey(user_purchase)));
+  });
+
+programCommand('all-purchases')
+  .option('-b, --buyer <string>', 'filter by buyer address')
+  .option('-i, --ico <string>', 'filter by ico pot address')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .action(async (directory, cmd) => {
+    const { env, keypair, rpc, buyer, ico } = cmd.opts();
+
+    console.log('Solana Cluster:', env);
+    console.log('Keypair Path:', keypair);
+    console.log('RPC URL:', rpc);
+
+    await setClusterConfig(env, keypair, rpc);
+
+    console.dir(
+      await getAllPurchases({
+        buyer: buyer ? new PublicKey(buyer) : undefined,
+        ico: ico ? new PublicKey(ico) : undefined,
+      }),
+      {
+        depth: null,
+      }
+    );
   });
 
 function programCommand(name: string) {

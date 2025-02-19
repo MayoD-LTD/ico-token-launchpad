@@ -29,7 +29,7 @@ pub struct IcoState {
     pub amount: u64,       // amount of token to sell
 
     pub cost_mint: Pubkey, // if address(0) - native coin
-    pub start_price: u64,  // price of 1 token in paymentTokens
+    pub start_price: u64,  // price of 1 token in cost tokens
     pub end_price: u64, // if 0 then price is fixed, else price grows liner from startPrice to endPrice based on sold tokens.
     pub start_date: i64, // timestamp when ICO starts. The date must be in future.
     pub end_date: i64, // timestamp when ICO ends, if 0 then ICO will be active until sell all tokens
