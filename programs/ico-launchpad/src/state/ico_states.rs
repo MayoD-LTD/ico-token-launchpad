@@ -118,45 +118,63 @@ impl IcoState {
     }
 
     pub fn get_unlocked(&self, amount: u64) -> (u64, u64) {
-        let unlocked = amount.checked_mul(self.unlock_percentage as u64).unwrap() / 1000;
+        let unlocked = amount.checked_mul(self.unlock_percentage as u64).unwrap() / 10000;
         (unlocked, amount - unlocked)
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-//     #[test]
-//     fn new_order_tree() -> Result<()> {
-//         let mut mockup: Book = Book {
-//             side: Side::Bid,
-//             market: Pubkey::default(),
-//             orders_count: 0,
-//             orders: vec![],
-//         };
+    #[test]
+    fn ico_calc() -> Result<()> {
+        let mut mockup: IcoState = IcoState {
+            seed: 0,
+            owner: Pubkey::default(),
 
-//         assert_eq!(mockup.orders_count, 0);
+            ico_mint: Pubkey::default(),
+            ico_decimals: 1_000_000_000,   // decimal is 9
+            amount: 1_000_000_000_000_000, // 1M tokens
 
-//         mockup.insert_order(generate_new_order(mockup.orders_count, 51));
-//         mockup.orders_count += 1;
-//         mockup.insert_order(generate_new_order(mockup.orders_count, 52));
-//         mockup.orders_count += 1;
-//         mockup.insert_order(generate_new_order(mockup.orders_count, 47));
-//         mockup.orders_count += 1;
-//         mockup.insert_order(generate_new_order(mockup.orders_count, 55));
-//         mockup.orders_count += 1;
+            cost_mint: Pubkey::default(),
+            start_price: 1_000_000_000, // 1 cost token for 1 ICO token
+            end_price: 0,               // use fixed price
+            start_date: 10000,          // current timestamp mockup
+            end_date: 0,                // selling until all tokens are sold
 
-//         mockup.remove_order(1)?;
-//         mockup.orders_count -= 1;
+            bonus_reserve: 1_000_000_000_000, // use 1k tokens as bonus
+            bonus_percentage: 10,             // 0.1% of total bonus reserve
+            bonus_activator: 100,             // 1% of total ICO tokens amount
 
-//         println!("{:#?}", mockup.orders);
+            is_closed: 0, // 1 is closed
 
-//         mockup.remove_order(3)?;
-//         mockup.orders_count -= 1;
+            total_sold: 0,
+            total_received: 0,
 
-//         println!("{:#?}", mockup.orders);
+            unlock_percentage: 10000, // not use vesting
+            cliff_period: 0,
+            vesting_percentage: 0,
+            vesting_interval: 0,
 
-//         Ok(())
-//     }
-// }
+            purchase_seq_num: 0, // increase sequantly every purchase
+
+            extra: 0, // extra space for version upgrade
+        };
+
+        let test_amount = 1_000_000_000;
+        let big_test_amount = 100_000_000_000_000;
+        let (available, cost_value) = mockup.get_value(test_amount);
+        assert_eq!(available, test_amount);
+        assert_eq!(cost_value, test_amount);
+
+        let bonus = mockup.get_bonus(big_test_amount);
+        assert_eq!(bonus, 100_000_000_000);
+
+        let (unlocked, locked) = mockup.get_unlocked(big_test_amount);
+        assert_eq!(unlocked, big_test_amount);
+        assert_eq!(locked, 0);
+
+        Ok(())
+    }
+}
