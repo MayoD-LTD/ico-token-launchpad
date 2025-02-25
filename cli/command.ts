@@ -11,7 +11,7 @@ import {
   buyToken,
   claim,
   withdrawCost,
-  rescueToken,
+  // rescueToken,
   getIcoInfo,
   getAllICOs,
   getUserPurchaseInfo,
@@ -276,24 +276,24 @@ programCommand('withdraw-cost')
     await withdrawCost(new PublicKey(ico), !cost_is_token22 ? undefined : true);
   });
 
-programCommand('rescue-token')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .requiredOption('-i, --ico <string>')
-  .option(
-    '-ip --ico_is_token22 <boolean>',
-    'should true if ico mint is token 2022'
-  )
-  .action(async (directory, cmd) => {
-    const { env, keypair, rpc, ico, ico_is_token22 } = cmd.opts();
+// programCommand('rescue-token')
+//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//   .requiredOption('-i, --ico <string>')
+//   .option(
+//     '-ip --ico_is_token22 <boolean>',
+//     'should true if ico mint is token 2022'
+//   )
+//   .action(async (directory, cmd) => {
+//     const { env, keypair, rpc, ico, ico_is_token22 } = cmd.opts();
 
-    console.log('Solana Cluster:', env);
-    console.log('Keypair Path:', keypair);
-    console.log('RPC URL:', rpc);
+//     console.log('Solana Cluster:', env);
+//     console.log('Keypair Path:', keypair);
+//     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+//     await setClusterConfig(env, keypair, rpc);
 
-    await rescueToken(new PublicKey(ico), !ico_is_token22 ? undefined : true);
-  });
+//     await rescueToken(new PublicKey(ico), !ico_is_token22 ? undefined : true);
+//   });
 
 programCommand('get-ico')
   .requiredOption('-i, --ico <string>')

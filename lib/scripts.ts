@@ -194,29 +194,29 @@ export const withdrawCostTx = async (
   return tx;
 };
 
-export const rescueTokenTx = async (
-  admin: PublicKey,
-  icoPot: PublicKey,
-  program: anchor.Program<IcoLaunchpad>,
-  tokenProgram: PublicKey = TOKEN_PROGRAM_ID
-) => {
-  const { data } = await getIcoState(icoPot, program);
-  console.log('ico seed', data.seed);
+// export const rescueTokenTx = async (
+//   admin: PublicKey,
+//   icoPot: PublicKey,
+//   program: anchor.Program<IcoLaunchpad>,
+//   tokenProgram: PublicKey = TOKEN_PROGRAM_ID
+// ) => {
+//   const { data } = await getIcoState(icoPot, program);
+//   console.log('ico seed', data.seed);
 
-  const tx = new Transaction();
+//   const tx = new Transaction();
 
-  const txId = await program.methods
-    .rescueToken(new anchor.BN(data.seed))
-    .accounts({
-      admin,
-      tokenProgram,
-    })
-    .transaction();
+//   const txId = await program.methods
+//     .rescueToken(new anchor.BN(data.seed))
+//     .accounts({
+//       admin,
+//       tokenProgram,
+//     })
+//     .transaction();
 
-  tx.add(txId);
+//   tx.add(txId);
 
-  return tx;
-};
+//   return tx;
+// };
 
 /**
  * Fetch global pool PDA data
