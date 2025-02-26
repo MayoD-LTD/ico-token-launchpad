@@ -109,6 +109,8 @@ export const closeIcoTx = async (
     .closeIco(new anchor.BN(data.seed))
     .accounts({
       authority,
+      // @ts-ignore
+      icoPot: icoPot,
       tokenProgram,
     })
     .transaction();
@@ -132,6 +134,8 @@ export const buyTokenTx = async (
     .buyToken(new anchor.BN(data.seed), new anchor.BN(amount))
     .accounts({
       buyer,
+      // @ts-ignore
+      icoPot: icoPot,
       icoTokenProgram,
       costTokenProgram,
     })
@@ -162,7 +166,14 @@ export const claimTx = async (
       new anchor.BN(icoData.data.seed),
       new anchor.BN(purchaseData.data.seed)
     )
-    .accounts({ buyer, tokenProgram })
+    .accounts({
+      buyer,
+      // @ts-ignore
+      icoPot: icoPot,
+      // @ts-ignore
+      userPurchase,
+      tokenProgram,
+    })
     .transaction();
 
   tx.add(txId);
@@ -185,6 +196,8 @@ export const withdrawCostTx = async (
     .withdrawCost(new anchor.BN(data.seed))
     .accounts({
       authority,
+      // @ts-ignore
+      icoPot: icoPot,
       tokenProgram,
     })
     .transaction();
