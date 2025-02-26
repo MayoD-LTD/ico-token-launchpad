@@ -7,13 +7,13 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-ico_launchpad = "373N2AQZikw4v5w1dq2TrWdQDRh87jhj93zBdGH25CVX"
+ico_launchpad = "vtYo2ayiQJ53h2ePxK4kHNCbi8uspXhp1GyYu78mmbr"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "Devnet"
 wallet = "../deploy.json"
 
 [scripts]

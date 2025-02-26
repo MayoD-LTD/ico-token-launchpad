@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/ico_launchpad.json`.
  */
 export type IcoLaunchpad = {
-  "address": "373N2AQZikw4v5w1dq2TrWdQDRh87jhj93zBdGH25CVX",
+  "address": "vtYo2ayiQJ53h2ePxK4kHNCbi8uspXhp1GyYu78mmbr",
   "metadata": {
     "name": "icoLaunchpad",
     "version": "0.1.0",

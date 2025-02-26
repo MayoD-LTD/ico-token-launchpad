@@ -10,7 +10,7 @@ pub use error::*;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("373N2AQZikw4v5w1dq2TrWdQDRh87jhj93zBdGH25CVX");
+declare_id!("vtYo2ayiQJ53h2ePxK4kHNCbi8uspXhp1GyYu78mmbr");
 
 #[program]
 pub mod ico_launchpad {
