@@ -74,7 +74,7 @@ impl CreateIco<'_> {
         // stop if launchpad is paused
         require!(global_pool.is_paused == 0, LaunchpadError::IsPaused);
 
-        ico_pot.seed = global_pool.total_ico_count;
+        ico_pot.seed = global_pool.ico_seq_num;
         ico_pot.owner = ctx.accounts.creator.key();
 
         ico_pot.ico_mint = ctx.accounts.ico_mint.key();
