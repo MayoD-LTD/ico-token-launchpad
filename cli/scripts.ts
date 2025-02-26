@@ -18,7 +18,7 @@ import {
   getGlobalState,
   getIcoState,
   getUserPurchaseState,
-  // rescueTokenTx,
+  rescueTokenTx,
   withdrawCostTx,
 } from '../lib/scripts';
 import { IcoLaunchpad } from '../target/types/ico_launchpad';
@@ -267,23 +267,23 @@ export const withdrawCost = async (
   console.log('txHash: ', txId);
 };
 
-// export const rescueToken = async (
-//   icoPot: PublicKey,
-//   icoIsToken22: boolean = false // need true if token is spl 2022
-// ) => {
-//   const tx = await rescueTokenTx(
-//     payer.publicKey,
-//     icoPot,
-//     program,
-//     icoIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
-//   );
+export const rescueToken = async (
+  icoPot: PublicKey,
+  icoIsToken22: boolean = false // need true if token is spl 2022
+) => {
+  const tx = await rescueTokenTx(
+    payer.publicKey,
+    icoPot,
+    program,
+    icoIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
+  );
 
-//   const txId = await provider.sendAndConfirm(tx, [], {
-//     commitment: 'confirmed',
-//   });
+  const txId = await provider.sendAndConfirm(tx, [], {
+    commitment: 'confirmed',
+  });
 
-//   console.log('txHash: ', txId);
-// };
+  console.log('txHash: ', txId);
+};
 
 export const getGlobalInfo = async () => {
   const { data, key } = await getGlobalState(program);
