@@ -102,7 +102,7 @@ impl BuyToken<'_> {
 
         // insufficient cost token
         require!(
-            ctx.accounts.buyer_cost_account.amount < amount_to_pay,
+            ctx.accounts.buyer_cost_account.amount > amount_to_pay,
             LaunchpadError::InsufficientTokenBalance
         );
 
