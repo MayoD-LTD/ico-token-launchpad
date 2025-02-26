@@ -42,7 +42,7 @@ export interface IcoState {
 }
 
 export const ICO_STATE_SIZE =
-  8 + 8 + 32 + 32 + 8 + 8 + 32 + 8 * 5 + 8 + 8 + 8 + 2 + 8 + 2 + 8 + 8 + 16 + 4;
+  8 + 8 + 32 + 32 + 8 + 8 + 32 + 8 * 5 + 4 + 4 + 8 + 8 + 4 + 8 + 4 + 8 + 8 + 16;
 
 export interface UserPurchase {
   seed: anchor.BN;
