@@ -37,10 +37,12 @@ export interface IcoState {
   vestingInterval: anchor.BN;
 
   purchaseSeqNum: anchor.BN;
+
+  // extra: anchor.BN; // u128
 }
 
 export const ICO_STATE_SIZE =
-  8 + 8 + 32 + 32 + 8 + 8 + 32 + 8 * 5 + 8 + 8 + 8 + 2 + 8 + 2 + 8 + 8 + 16;
+  8 + 8 + 32 + 32 + 8 + 8 + 32 + 8 * 5 + 8 + 8 + 8 + 2 + 8 + 2 + 8 + 8 + 16 + 4;
 
 export interface UserPurchase {
   seed: anchor.BN;
@@ -51,9 +53,11 @@ export interface UserPurchase {
   bonus: anchor.BN;
   lockedAmount: anchor.BN;
   totalClaimed: anchor.BN;
+ 
+  // extra: anchor.BN; // u128
 }
 
-export const USER_PURCHASE_SIZE = 8 + 8 + 32 + 32 + 8 * 5 + 16;
+export const USER_PURCHASE_SIZE = 8 + 8 + 32 + 32 + 8 * 5 + 16 + 4;
 
 export interface CreateIcoParams {
   amount: anchor.BN;
