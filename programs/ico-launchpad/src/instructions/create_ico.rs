@@ -95,11 +95,11 @@ impl CreateIco<'_> {
         ico_pot.end_date = params.end_date;
 
         require!(
-            params.bonus_percentage > 10000,
+            params.bonus_percentage <= 10000,
             LaunchpadError::InvalidPercentageValue
         );
         require!(
-            params.bonus_activator > 10000,
+            params.bonus_activator <= 10000,
             LaunchpadError::InvalidPercentageValue
         );
         ico_pot.bonus_reserve = params.bonus_reserve;
@@ -127,14 +127,14 @@ impl CreateIco<'_> {
         )?;
 
         require!(
-            params.unlock_percentage > 10000,
+            params.unlock_percentage <= 10000,
             LaunchpadError::InvalidPercentageValue
         );
         ico_pot.unlock_percentage = params.unlock_percentage;
         require!(params.cliff_period >= 0, LaunchpadError::InvalidDateConfig);
         ico_pot.cliff_period = params.cliff_period;
         require!(
-            params.vesting_percentage > 10000,
+            params.vesting_percentage <= 10000,
             LaunchpadError::InvalidPercentageValue
         );
         ico_pot.vesting_percentage = params.vesting_percentage;
