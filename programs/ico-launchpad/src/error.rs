@@ -24,4 +24,6 @@ pub enum LaunchpadError {
     IncorrectIcoAddress,
     #[msg("ICO not started or already ended")]
     InvalidSalePeriod,
+    #[msg("ICO amount and reserve should not zero")]
+    InvalidAmountConfig,
 }

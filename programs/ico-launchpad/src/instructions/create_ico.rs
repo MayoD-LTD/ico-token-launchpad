@@ -79,6 +79,8 @@ impl CreateIco<'_> {
 
         ico_pot.ico_mint = ctx.accounts.ico_mint.key();
         ico_pot.ico_decimals = (10 as u64).pow(ctx.accounts.ico_mint.decimals as u32);
+
+        require!(params.amount > 0, LaunchpadError::InvalidAmountConfig);
         ico_pot.amount = params.amount;
 
         ico_pot.cost_mint = ctx.accounts.cost_mint.key();
@@ -105,8 +107,9 @@ impl CreateIco<'_> {
         ico_pot.bonus_reserve = params.bonus_reserve;
         ico_pot.bonus_percentage = params.bonus_percentage;
         ico_pot.bonus_activator = params.bonus_activator;
-
+        
         let deposit_amount = params.amount.checked_add(params.bonus_reserve).unwrap();
+        require!(deposit_amount > 0, LaunchpadError::InvalidAmountConfig);
         require!(
             ctx.accounts.creator_ico_account.amount >= deposit_amount,
             LaunchpadError::InsufficientTokenBalance

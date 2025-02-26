@@ -1827,6 +1827,11 @@ export type IcoLaunchpad = {
       "code": 6010,
       "name": "invalidSalePeriod",
       "msg": "ICO not started or already ended"
+    },
+    {
+      "code": 6011,
+      "name": "invalidAmountConfig",
+      "msg": "ICO amount and reserve should not zero"
     }
   ],
   "types": [
