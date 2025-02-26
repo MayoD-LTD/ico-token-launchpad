@@ -96,6 +96,13 @@ impl BuyToken<'_> {
         // stop if ico pot is closed
         require!(ico_pot.is_closed == 0, LaunchpadError::PotIsClosed);
 
+        let now = Clock::get().unwrap().unix_timestamp;
+        require!(ico_pot.start_date < now, LaunchpadError::InvalidSalePeriod);
+        require!(
+            ico_pot.end_date == 0 || ico_pot.end_date > now,
+            LaunchpadError::InvalidSalePeriod
+        );
+
         let (available_amount, amount_to_pay) = ico_pot.get_value(amount_to_buy);
         // all ico tokens sold out
         require!(available_amount > 0, LaunchpadError::NoAvailableTokens);

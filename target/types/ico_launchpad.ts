@@ -1822,6 +1822,11 @@ export type IcoLaunchpad = {
       "code": 6009,
       "name": "incorrectIcoAddress",
       "msg": "User purchase ICO pot address not matched with passed account"
+    },
+    {
+      "code": 6010,
+      "name": "invalidSalePeriod",
+      "msg": "ICO not started or already ended"
     }
   ],
   "types": [

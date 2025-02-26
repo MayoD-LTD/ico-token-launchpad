@@ -111,6 +111,7 @@ impl IcoState {
             if bonus > self.bonus_reserve {
                 bonus = self.bonus_reserve;
             }
+            self.bonus_reserve -= bonus;
             return bonus;
         }
 

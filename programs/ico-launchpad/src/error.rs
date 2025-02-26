@@ -22,4 +22,6 @@ pub enum LaunchpadError {
     AlreadyClosed,
     #[msg("User purchase ICO pot address not matched with passed account")]
     IncorrectIcoAddress,
+    #[msg("ICO not started or already ended")]
+    InvalidSalePeriod,
 }
