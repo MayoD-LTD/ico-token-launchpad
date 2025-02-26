@@ -53,11 +53,9 @@ export interface UserPurchase {
   bonus: anchor.BN;
   lockedAmount: anchor.BN;
   totalClaimed: anchor.BN;
- 
-  // extra: anchor.BN; // u128
 }
 
-export const USER_PURCHASE_SIZE = 8 + 8 + 32 + 32 + 8 * 5 + 16 + 4;
+export const USER_PURCHASE_SIZE = 8 + 8 + 32 + 32 + 8 * 5 + 16;
 
 export interface CreateIcoParams {
   amount: anchor.BN;
