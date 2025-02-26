@@ -37,7 +37,7 @@ pub struct BuyToken<'info> {
     pub cost_mint: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(init,
-        seeds = [USER_PURCHASE_SEED.as_bytes(), ico_pot.purchase_seq_num.to_le_bytes().as_ref()],
+        seeds = [USER_PURCHASE_SEED.as_bytes(), ico_pot.key().to_bytes().as_ref(), ico_pot.purchase_seq_num.to_le_bytes().as_ref()],
         bump,
         payer = buyer,
         space = UserPurchase::DATA_SIZE,

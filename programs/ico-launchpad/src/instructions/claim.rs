@@ -30,7 +30,7 @@ pub struct Claim<'info> {
     pub ico_mint: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(mut,
-        seeds = [USER_PURCHASE_SEED.as_bytes(), purchase_seed.to_le_bytes().as_ref()],
+        seeds = [USER_PURCHASE_SEED.as_bytes(), ico_pot.key().to_bytes().as_ref(), purchase_seed.to_le_bytes().as_ref()],
         bump,
     )]
     pub user_purchase: Box<Account<'info, UserPurchase>>,

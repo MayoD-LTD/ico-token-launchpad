@@ -117,6 +117,10 @@
               },
               {
                 "kind": "account",
+                "path": "ico_pot"
+              },
+              {
+                "kind": "account",
                 "path": "ico_pot.purchase_seq_num",
                 "account": "IcoState"
               }
@@ -542,6 +546,10 @@
                   115,
                   101
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "ico_pot"
               },
               {
                 "kind": "arg",

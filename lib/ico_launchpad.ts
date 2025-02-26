@@ -123,6 +123,10 @@ export type IcoLaunchpad = {
               },
               {
                 "kind": "account",
+                "path": "icoPot"
+              },
+              {
+                "kind": "account",
                 "path": "ico_pot.purchase_seq_num",
                 "account": "icoState"
               }
@@ -548,6 +552,10 @@ export type IcoLaunchpad = {
                   115,
                   101
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "icoPot"
               },
               {
                 "kind": "arg",
