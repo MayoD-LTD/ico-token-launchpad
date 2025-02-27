@@ -82,7 +82,7 @@ impl IcoState {
                     .unwrap();
             let executed_end_price = self.start_price
                 + (self.end_price - self.start_price)
-                    .checked_mul(available_amount)
+                    .checked_mul(self.total_sold + available_amount)
                     .unwrap()
                     .checked_div(self.amount)
                     .unwrap();
