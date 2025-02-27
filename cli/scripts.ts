@@ -17,7 +17,9 @@ import {
   findPurchases,
   getGlobalState,
   getIcoState,
+  getUnlocked,
   getUserPurchaseState,
+  getValue,
   rescueTokenTx,
   withdrawCostTx,
 } from '../lib/scripts';
@@ -299,7 +301,7 @@ export const getGlobalInfo = async () => {
 
 export const getIcoInfo = async (icoPot: PublicKey) => {
   const { data, key } = await getIcoState(icoPot, program);
-  console.log('ico pot info: ', key.toBase58());
+  console.log('ico pot: ', key.toBase58());
 
   return {
     seed: data.seed.toNumber(),
@@ -333,6 +335,18 @@ export const getIcoInfo = async (icoPot: PublicKey) => {
   };
 };
 
+export const getCostInfo = async (icoPot: PublicKey, amount: string) => {
+  const { data, key } = await getIcoState(icoPot, program);
+  console.log('ico pot: ', key.toBase58());
+
+  const { availableAmount, value } = getValue(data, new anchor.BN(amount));
+
+  return {
+    availableAmount: availableAmount.toNumber(),
+    value: value.toNumber(),
+  };
+};
+
 export const getAllICOs = async ({
   owner,
   icoMint,
@@ -350,6 +364,9 @@ export const getUserPurchaseInfo = async (userPurchase: PublicKey) => {
   const { data, key } = await getUserPurchaseState(userPurchase, program);
   console.log('user purchase: ', key.toBase58());
 
+  const icoData = (await getIcoState(data.ico, program)).data;
+  console.log('ico pot: ', data.ico.toBase58());
+
   return {
     seed: data.seed.toNumber(),
     buyer: data.buyer.toBase58(),
@@ -359,6 +376,7 @@ export const getUserPurchaseInfo = async (userPurchase: PublicKey) => {
     bonus: data.bonus.toNumber(),
     lockedAmount: data.lockedAmount.toNumber(),
     totalClaimed: data.totalClaimed.toNumber(),
+    unlockedAmount: getUnlocked(data, icoData).toNumber(),
   };
 };
 

@@ -425,3 +425,57 @@ export const findPurchases = async (
     };
   });
 };
+
+export const getUnlocked = (data: UserPurchase, ico: IcoState) => {
+  // vesting not used
+  if (data.lockedAmount.toNumber() == 0) return new anchor.BN(0);
+
+  let cliffFinish = data.buyDate.toNumber() + ico.cliffPeriod.toNumber();
+  let now = Math.floor(Date.now() / 1000);
+
+  // no unlocked during cliff period
+  if (cliffFinish > now) return new anchor.BN(0);
+
+  let intervals =
+    Math.floor((now - cliffFinish) / ico.vestingInterval.toNumber()) + 1;
+
+  let totalUnlocked = data.lockedAmount
+    .mul(new anchor.BN(intervals))
+    .mul(new anchor.BN(ico.vestingPercentage))
+    .div(new anchor.BN(10000));
+
+  if (totalUnlocked.gt(data.lockedAmount)) {
+    totalUnlocked = data.lockedAmount;
+  }
+
+  return totalUnlocked.sub(data.totalClaimed);
+};
+
+export const getValue = (ico: IcoState, amount: anchor.BN) => {
+  let availableAmount = ico.amount.sub(ico.totalSold);
+
+  if (amount.lt(availableAmount)) {
+    availableAmount = amount;
+  }
+
+  if (ico.endPrice.eq(new anchor.BN(0))) {
+    // fixed price
+    let value = availableAmount.mul(ico.startPrice).div(ico.icoDecimals);
+    return { availableAmount, value };
+  } else {
+    let currentPrice = ico.endPrice
+      .sub(ico.startPrice)
+      .mul(ico.totalSold)
+      .div(ico.amount)
+      .add(ico.startPrice);
+    let executedPrice = ico.endPrice
+      .sub(ico.startPrice)
+      .mul(ico.totalSold.add(availableAmount))
+      .div(ico.amount)
+      .add(ico.startPrice);
+    let value = availableAmount
+      .mul(currentPrice.add(executedPrice))
+      .div(ico.icoDecimals.mul(new anchor.BN(2)));
+    return { availableAmount, value };
+  }
+};

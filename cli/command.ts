@@ -16,6 +16,7 @@ import {
   getAllICOs,
   getUserPurchaseInfo,
   getAllPurchases,
+  getCostInfo,
 } from './scripts';
 
 // program.version('0.0.1');
@@ -200,6 +201,22 @@ programCommand('close-ico')
     await setClusterConfig(env, keypair, rpc);
 
     await closeIco(new PublicKey(ico), !ico_is_token22 ? undefined : true);
+  });
+
+programCommand('simulate-buy')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .requiredOption('-i, --ico <string>')
+  .requiredOption('-a, --amount <number>', 'amount to buy ico tokens')
+  .action(async (directory, cmd) => {
+    const { env, keypair, rpc, ico, amount } = cmd.opts();
+
+    console.log('Solana Cluster:', env);
+    console.log('Keypair Path:', keypair);
+    console.log('RPC URL:', rpc);
+
+    await setClusterConfig(env, keypair, rpc);
+
+    console.log(await getCostInfo(new PublicKey(ico), amount as string));
   });
 
 programCommand('buy-token')
