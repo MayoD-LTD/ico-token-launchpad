@@ -1,7 +1,7 @@
 {
   "name": "ico-launchpad",
   "author": "Myrmekes-a",
-  "license": "ISC",  
+  "license": "ISC",
   "keywords": ["solana-program", "solana-token", "spl-token", "spl-token-2022", "anchor-lang", "launchpad", "solana-web3", "typescript"],
   "scripts": {
     "ts-node": "ts-node ./cli/command.ts",
@@ -12,6 +12,7 @@
     "@coral-xyz/anchor": "^0.30.1",
     "@solana/spl-token": "^0.3.8",
     "@solana/web3.js": "^1.77.3",
+    "solana-vue-wallets": "^1.0.0",
     "commander": "^9.5.0"
   },
   "devDependencies": {
