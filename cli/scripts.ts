@@ -180,6 +180,39 @@ export const createIco = async (
     console.log('txHash: ', txId);
 };
 
+export const createIcoWrapper = async (
+    icoMint: PublicKey,
+    costMint: PublicKey,
+    params: CreateIcoInputs,
+    icoIsToken22: boolean = false, // need true if token is spl 2022
+    costIsToken22: boolean = false // need true if token is spl 2022
+) => {
+    return await createIcoTx(
+        payer.publicKey,
+        icoMint,
+        costMint,
+        {
+            amount: new anchor.BN(params.amount),
+            startPrice: new anchor.BN(params.startPrice),
+            endPrice: new anchor.BN(params.endPrice),
+            startDate: new anchor.BN(params.startDate),
+            endDate: new anchor.BN(params.endDate),
+
+            bonusReserve: new anchor.BN(params.bonusReserve),
+            bonusPercentage: params.bonusPercentage,
+            bonusActivator: params.bonusActivator,
+
+            unlockPercentage: params.unlockPercentage,
+            cliffPeriod: new anchor.BN(params.cliffPeriod),
+            vestingPercentage: params.vestingPercentage,
+            vestingInterval: new anchor.BN(params.vestingInterval),
+        },
+        program,
+        icoIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID,
+        costIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
+    );
+};
+
 /**
  * Close ICO with owner authority
  */
