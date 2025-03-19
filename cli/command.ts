@@ -1,22 +1,22 @@
 import { program } from 'commander';
 import { PublicKey } from '@solana/web3.js';
 import {
-  changeAdmin,
-  getGlobalInfo,
-  initProject,
-  setClusterConfig,
-  changeConfig,
-  createIco,
-  closeIco,
-  buyToken,
-  claim,
-  withdrawCost,
-  rescueToken,
-  getIcoInfo,
-  getAllICOs,
-  getUserPurchaseInfo,
-  getAllPurchases,
-  getCostInfo,
+    changeAdmin,
+    getGlobalInfo,
+    initProject,
+    setClusterConfig,
+    changeConfig,
+    createIco,
+    closeIco,
+    buyToken,
+    claim,
+    withdrawCost,
+    rescueToken,
+    getIcoInfo,
+    getAllICOs,
+    getUserPurchaseInfo,
+    getAllPurchases,
+    getCostInfo, loadWalletFromKeypair,
 } from './scripts';
 
 // program.version('0.0.1');
@@ -29,7 +29,7 @@ programCommand('status')
     console.log('Solana Cluster:', env);
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     console.log(await getGlobalInfo());
   });
@@ -43,7 +43,7 @@ programCommand('init')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     await initProject();
   });
@@ -57,7 +57,8 @@ programCommand('change-admin')
     console.log('Solana Cluster:', env);
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
-    await setClusterConfig(env, keypair, rpc);
+
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     //  update global info
     await changeAdmin(new_admin);
@@ -73,7 +74,7 @@ programCommand('change-config')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     await changeConfig(paused === 'true');
   });
@@ -158,7 +159,8 @@ programCommand('create-ico')
     console.log('Solana Cluster:', env);
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
-    await setClusterConfig(env, keypair, rpc);
+
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     await createIco(
       new PublicKey(ico_mint),
@@ -198,7 +200,7 @@ programCommand('close-ico')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     await closeIco(new PublicKey(ico), !ico_is_token22 ? undefined : true);
   });
@@ -214,7 +216,7 @@ programCommand('simulate-buy')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     console.log(await getCostInfo(new PublicKey(ico), amount as string));
   });
@@ -239,7 +241,7 @@ programCommand('buy-token')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     await buyToken(
       new PublicKey(ico),
@@ -265,7 +267,7 @@ programCommand('claim')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     await claim(
       new PublicKey(ico),
@@ -288,7 +290,7 @@ programCommand('withdraw-cost')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     await withdrawCost(new PublicKey(ico), !cost_is_token22 ? undefined : true);
   });
@@ -307,7 +309,7 @@ programCommand('rescue-token')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     await rescueToken(new PublicKey(ico), !ico_is_token22 ? undefined : true);
   });
@@ -322,7 +324,7 @@ programCommand('get-ico')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     console.log(await getIcoInfo(new PublicKey(ico)));
   });
@@ -339,7 +341,7 @@ programCommand('all-icos')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     console.dir(
       await getAllICOs({
@@ -363,7 +365,7 @@ programCommand('user-purchase')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     console.log(await getUserPurchaseInfo(new PublicKey(user_purchase)));
   });
@@ -379,7 +381,7 @@ programCommand('all-purchases')
     console.log('Keypair Path:', keypair);
     console.log('RPC URL:', rpc);
 
-    await setClusterConfig(env, keypair, rpc);
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
 
     console.dir(
       await getAllPurchases({

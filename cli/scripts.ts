@@ -43,6 +43,14 @@ export const setLogLevel = (enabled: boolean, level?: LogLevelDesc) => {
     }
 };
 
+export const loadWalletFromKeypair = (keypair: string) => {
+    const walletKeypair = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(fs.readFileSync(keypair, 'utf-8'))), {
+        skipValidation: true,
+    });
+    const wallet = new NodeWallet(walletKeypair);
+    return wallet;
+};
+
 /**
  * Set cluster, provider, program
  * If rpc != null use rpc, otherwise use cluster param
@@ -64,6 +72,8 @@ export const setClusterConfig = async (cluster: web3.Cluster, wallet: NodeWallet
     });
     anchor.setProvider(provider);
     payer = wallet;
+
+    console.log(wallet)
 
     console.log('Wallet Address: ', wallet.publicKey.toBase58());
 
