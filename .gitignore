@@ -6,6 +6,7 @@ test-ledger
 .yarn
 
 target/debug
+target/sbpf-solana-solana
 target/release
 target/sbf*
 target/*.*
