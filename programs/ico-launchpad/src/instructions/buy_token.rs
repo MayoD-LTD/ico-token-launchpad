@@ -85,6 +85,7 @@ impl BuyToken<'_> {
         ctx: &mut Context<Self>,
         seed: u64,
         amount_to_buy: u64,
+        ref_code: String,
     ) -> Result<()> {
         let global_pool = &mut ctx.accounts.global_pool;
         let ico_pot = &mut ctx.accounts.ico_pot;
@@ -147,6 +148,8 @@ impl BuyToken<'_> {
         user_purchase.bonus = bonus;
         // allocate vesting
         user_purchase.locked_amount = locked;
+        user_purchase.ref_code = ref_code;
+
 
         // transfer unlocked ico tokens
         require!(

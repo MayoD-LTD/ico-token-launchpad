@@ -10,7 +10,7 @@ pub use error::*;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("89WfLzoLH6D9DFnHN6Qtqx9mzh2wgaCiVW9zubQb1wmh");
+declare_id!("7XYsd1BMimdgt7ikMgXKzxhb62tzLb4K47vLUHPA7URF");
 
 #[program]
 pub mod ico_launchpad {
@@ -44,8 +44,8 @@ pub mod ico_launchpad {
     }
 
     /** Purchase ico token by paying cost token */
-    pub fn buy_token(mut ctx: Context<BuyToken>, seed: u64, amount: u64) -> Result<()> {
-        BuyToken::process_instruction(&mut ctx, seed, amount)
+    pub fn buy_token(mut ctx: Context<BuyToken>, seed: u64, amount: u64, ref_code: String) -> Result<()> {
+        BuyToken::process_instruction(&mut ctx, seed, amount, ref_code)
     }
 
     /** Claim unlocked token as buyer */

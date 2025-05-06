@@ -14,6 +14,7 @@ pub struct UserPurchase {
     pub locked_amount: u64, // vesting locked amount when purchase
     pub total_claimed: u64, // total claimed of unlocked amounts
     pub extra: u128,
+    pub ref_code: String
 }
 
 impl UserPurchase {

@@ -122,6 +122,7 @@ export const buyTokenTx = async (
   buyer: PublicKey,
   icoPot: PublicKey,
   amount: string,
+  refCode: string,
   program: anchor.Program<IcoLaunchpad>,
   icoTokenProgram: PublicKey = TOKEN_PROGRAM_ID,
   costTokenProgram: PublicKey = TOKEN_PROGRAM_ID
@@ -131,7 +132,7 @@ export const buyTokenTx = async (
 
   const tx = new Transaction();
   const txId = await program.methods
-    .buyToken(new anchor.BN(data.seed), new anchor.BN(amount))
+    .buyToken(new anchor.BN(data.seed), new anchor.BN(amount), refCode)
     .accounts({
       buyer,
       // @ts-ignore

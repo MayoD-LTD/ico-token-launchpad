@@ -1,5 +1,5 @@
 {
-  "address": "89WfLzoLH6D9DFnHN6Qtqx9mzh2wgaCiVW9zubQb1wmh",
+  "address": "7XYsd1BMimdgt7ikMgXKzxhb62tzLb4K47vLUHPA7URF",
   "metadata": {
     "name": "ico_launchpad",
     "version": "0.1.0",
@@ -382,6 +382,10 @@
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "ref_code",
+          "type": "string"
         }
       ]
     },
@@ -2049,6 +2053,10 @@
           {
             "name": "extra",
             "type": "u128"
+          },
+          {
+            "name": "ref_code",
+            "type": "string"
           }
         ]
       }

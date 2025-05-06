@@ -251,6 +251,7 @@ export const closeIco = async (
 export const buyTokenWrapper = async (
     icoPot: PublicKey,
     amount: string,
+    refCode: string,
     icoIsToken22: boolean = false, // need true if token is spl 2022
     costIsToken22: boolean = false // need true if token is spl 2022
 ) => {
@@ -258,6 +259,7 @@ export const buyTokenWrapper = async (
         payer.publicKey,
         icoPot,
         amount,
+        refCode,
         program,
         icoIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID,
         costIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
@@ -267,6 +269,7 @@ export const buyTokenWrapper = async (
 export const buyToken = async (
     icoPot: PublicKey,
     amount: string,
+    refCode: string,
     icoIsToken22: boolean = false, // need true if token is spl 2022
     costIsToken22: boolean = false // need true if token is spl 2022
 ) => {
@@ -274,6 +277,7 @@ export const buyToken = async (
         payer.publicKey,
         icoPot,
         amount,
+        refCode,
         program,
         icoIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID,
         costIsToken22 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID

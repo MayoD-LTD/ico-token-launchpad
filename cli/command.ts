@@ -233,8 +233,12 @@ programCommand('buy-token')
     '-cp --cost_is_token22 <boolean>',
     'should true if cost mint is token 2022'
   )
+  .option( 
+    '-rc --ref_code <string>',
+    'referral code for purchase, null if not provided'
+  )
   .action(async (directory, cmd) => {
-    const { env, keypair, rpc, ico, amount, ico_is_token22, cost_is_token22 } =
+    const { env, keypair, rpc, ico, amount, ico_is_token22, cost_is_token22, ref_code } =
       cmd.opts();
 
     console.log('Solana Cluster:', env);
@@ -246,8 +250,9 @@ programCommand('buy-token')
     await buyToken(
       new PublicKey(ico),
       amount as string,
+      !ref_code ? "" : ref_code as string,
       !ico_is_token22 ? undefined : true,
-      !cost_is_token22 ? undefined : true
+      !cost_is_token22 ? undefined : true,
     );
   });
 
