@@ -75,9 +75,7 @@ export const createIcoTx = async (
   icoTokenProgram: PublicKey = TOKEN_PROGRAM_ID,
   costTokenProgram: PublicKey = TOKEN_PROGRAM_ID
 ) => {
-  const tx = new Transaction();
-
-  const txId = await program.methods
+  const tx = await program.methods
     .createIco(inputParams)
     .accounts({
       creator,
@@ -87,8 +85,6 @@ export const createIcoTx = async (
       costTokenProgram,
     })
     .transaction();
-
-  tx.add(txId);
 
   return tx;
 };

@@ -1,22 +1,22 @@
 import { program } from 'commander';
 import { PublicKey } from '@solana/web3.js';
 import {
-    changeAdmin,
-    getGlobalInfo,
-    initProject,
-    setClusterConfig,
-    changeConfig,
-    createIco,
-    closeIco,
-    buyToken,
-    claim,
-    withdrawCost,
-    rescueToken,
-    getIcoInfo,
-    getAllICOs,
-    getUserPurchaseInfo,
-    getAllPurchases,
-    getCostInfo, loadWalletFromKeypair,
+  changeAdmin,
+  getGlobalInfo,
+  initProject,
+  setClusterConfig,
+  changeConfig,
+  createIco,
+  closeIco,
+  buyToken,
+  claim,
+  withdrawCost,
+  rescueToken,
+  getIcoInfo,
+  getAllICOs,
+  getUserPurchaseInfo,
+  getAllPurchases,
+  getCostInfo, loadWalletFromKeypair,
 } from './scripts';
 
 // program.version('0.0.1');
@@ -233,7 +233,7 @@ programCommand('buy-token')
     '-cp --cost_is_token22 <boolean>',
     'should true if cost mint is token 2022'
   )
-  .option( 
+  .option(
     '-rc --ref_code <string>',
     'referral code for purchase, null if not provided'
   )
@@ -250,7 +250,7 @@ programCommand('buy-token')
     await buyToken(
       new PublicKey(ico),
       amount as string,
-      !ref_code ? "" : ref_code as string,
+      ref_code ? ref_code as string : "",
       !ico_is_token22 ? undefined : true,
       !cost_is_token22 ? undefined : true,
     );
@@ -437,4 +437,29 @@ yarn script user-status -a 4EjZ4sGnvfLbW89AAzSehob7Rmkym7vCH3SMcThSx9q1
 yarn script get-users
 yarn script status
 
+yarn ts-node init --keypair ./id.json --rpc http://127.0.0.1:8899
+yarn ts-node create-ico \
+  --keypair ./id.json   \
+  --rpc http://127.0.0.1:8899   \
+  --ico_mint BV3bvkBqVawTghH4uCaba3MGgYs63XyxwX9CeULwvmKG   \
+  --cost_mint BV3bvkBqVawTghH4uCaba3MGgYs63XyxwX9CeULwvmKG   \
+  --amount 1000000   \
+  --start_price 1   \
+  --end_price 100   \
+  --start_date 1746791919383   \
+  --end_date 1846791919383   \
+  --bonus_reserve 10000   \
+  --bonus_percentage 500   \
+  --bonus_activator 7500   \
+  --unlock_percentage 1000   \
+  --cliff_period 10 \
+  --vesting_percentage 500 \
+  --vesting_interval 604800 
+
+yarn ts-node buy-token \
+  --keypair ./id.json   \
+  --rpc http://127.0.0.1:8899   \
+  --ico BV3bvkBqVawTghH4uCaba3MGgYs63XyxwX9CeULwvmKG \
+  --amount 1 \
+  --ref_code REF123
 */
