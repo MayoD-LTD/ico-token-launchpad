@@ -15,7 +15,7 @@ import {
   Transaction,
 } from "@solana/web3.js";
 import payerKpJson from "../id.json";
-import { buyTokenTx, createIcoTx, createInitializeTx } from "../lib/scripts";
+import { buyTokenTx, createIcoTx, createInitializeTx, findPurchases } from "../lib/scripts";
 import { BN } from "bn.js";
 import { ICO_POT_SEED, USER_PURCHASE_SEED } from "../lib/constant";
 
@@ -170,7 +170,7 @@ describe("ico-launchpad", () => {
       ComputeBudgetProgram.setComputeUnitLimit({ units: 100_000 }),
       ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100_000 })
     );
-    
+
     const { blockhash } = await connection.getLatestBlockhash();
     tx.recentBlockhash = blockhash;
     tx.feePayer = adminKp.publicKey;
@@ -198,7 +198,14 @@ describe("ico-launchpad", () => {
     );
     console.log("User purchase data:", userPurchaseData);
   });
-});
+
+  it("fetch purchases", async () => {
+    const space = program.account.userPurchase.size
+    console.log("account space: ", space)
+    const purchases = await findPurchases({buyer: new PublicKey("buytKapcCU8dtKnVC5Qiv4vnYVR9fqPfeobFV3yVJc7")}, program)
+    console.log("purchases: ", purchases)
+  });
+})
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));

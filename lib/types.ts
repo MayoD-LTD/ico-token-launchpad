@@ -53,9 +53,11 @@ export interface UserPurchase {
   bonus: anchor.BN;
   lockedAmount: anchor.BN;
   totalClaimed: anchor.BN;
+  extra: anchor.BN;
+  refCode: string;
 }
 
-export const USER_PURCHASE_SIZE = 8 + 8 + 32 + 32 + 8 * 5 + 16;
+export const USER_PURCHASE_SIZE = 8 + 8 + 32 + 32 + 8 * 5 + 17;   // this can be changed bcz of ref_code string length
 
 export interface CreateIcoParams {
   amount: anchor.BN;

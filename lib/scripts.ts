@@ -376,7 +376,7 @@ export const getUserPurchaseState = async (
   }
 };
 
-export const findPurchases = async (
+export const findPurchasesOld = async (
   { buyer, ico }: { buyer?: PublicKey; ico?: PublicKey },
   program: anchor.Program<IcoLaunchpad>
 ) => {
@@ -396,6 +396,7 @@ export const findPurchases = async (
       memcmp: { offset: 48, bytes: ico.toBase58() },
     });
   }
+  const purchasesFrom = await program.account.userPurchase.all()
 
   const purchaseAccs = await program.provider.connection.getProgramAccounts(
     program.programId,
@@ -421,6 +422,35 @@ export const findPurchases = async (
       data,
     };
   });
+};
+
+export const findPurchases = async (
+  { buyer, ico }: { buyer?: PublicKey; ico?: PublicKey },
+  program: anchor.Program<IcoLaunchpad>
+) => {
+  const allPurchases = await program.account.userPurchase.all();
+
+  const filtered = allPurchases
+    .filter(({ account }) => {
+      if (buyer && !account.buyer.equals(buyer)) return false;
+      if (ico && !account.ico.equals(ico)) return false;
+      return true;
+    })
+    .map(({ publicKey, account }) => ({
+      key: publicKey.toBase58(),
+      data: {
+        seed: account.seed.toNumber(),
+        buyer: account.buyer.toBase58(),
+        ico: account.ico.toBase58(),
+        buyAmount: account.buyAmount.toNumber(),
+        buyDate: account.buyDate.toNumber(),
+        bonus: account.bonus.toNumber(),
+        lockedAmount: account.lockedAmount.toNumber(),
+        totalClaimed: account.totalClaimed.toNumber(),
+      },
+    }));
+
+  return filtered;
 };
 
 export const getUnlocked = (data: UserPurchase, ico: IcoState) => {
