@@ -6,10 +6,10 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-ico_launchpad = "2nGMW9ML8zpS8uKyMtGp2NzJfVH6DNMNVZcJyMMmLkPU"
+ico_launchpad = "HXfrMHGx97CqoHidGSNcHvdn2GWcgdaVKkT6S42bMAhX"
 
 [programs.localnet]
-ico_launchpad = "2nGMW9ML8zpS8uKyMtGp2NzJfVH6DNMNVZcJyMMmLkPU"
+ico_launchpad = "HXfrMHGx97CqoHidGSNcHvdn2GWcgdaVKkT6S42bMAhX"
 
 [registry]
 url = "https://api.apr.dev"
