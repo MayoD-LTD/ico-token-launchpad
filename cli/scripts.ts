@@ -73,7 +73,7 @@ export const setClusterConfig = async (cluster: web3.Cluster, wallet: NodeWallet
     anchor.setProvider(provider);
     payer = wallet;
 
-    console.log(wallet)
+    console.log(wallet);
 
     console.log('Wallet Address: ', wallet.publicKey.toBase58());
 
@@ -450,7 +450,7 @@ export const getUserPurchaseInfo = async (userPurchase: PublicKey) => {
         lockedAmount: data.lockedAmount.toNumber(),
         totalClaimed: data.totalClaimed.toNumber(),
         unlockedAmount: getUnlocked(data, icoData).toNumber(),
-        refCode: data.refCode
+        refCode: data.refCode !== '' ? data.refCode : null,
     };
 };
 
