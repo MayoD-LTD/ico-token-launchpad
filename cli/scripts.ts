@@ -450,6 +450,7 @@ export const getUserPurchaseInfo = async (userPurchase: PublicKey) => {
         lockedAmount: data.lockedAmount.toNumber(),
         totalClaimed: data.totalClaimed.toNumber(),
         unlockedAmount: getUnlocked(data, icoData).toNumber(),
+        refCode: data.refCode
     };
 };
 

@@ -447,6 +447,7 @@ export const findPurchases = async (
         bonus: account.bonus.toNumber(),
         lockedAmount: account.lockedAmount.toNumber(),
         totalClaimed: account.totalClaimed.toNumber(),
+        refCode: account.refCode
       },
     }));
 
