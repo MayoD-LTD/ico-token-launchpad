@@ -300,6 +300,25 @@ programCommand('withdraw-cost')
     await withdrawCost(new PublicKey(ico), !cost_is_token22 ? undefined : true);
   });
 
+programCommand('withdrawal-cost')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .requiredOption('-i, --ico <string>')
+  .option(
+    '-cp --cost_is_token22 <boolean>',
+    'should true if cost mint is token 2022'
+  )
+  .action(async (directory, cmd) => {
+    const { env, keypair, rpc, ico, cost_is_token22 } = cmd.opts();
+
+    console.log('Solana Cluster:', env);
+    console.log('Keypair Path:', keypair);
+    console.log('RPC URL:', rpc);
+
+    await setClusterConfig(env, loadWalletFromKeypair(keypair), rpc);
+
+    await withdrawCost(new PublicKey(ico), !cost_is_token22 ? undefined : true);
+  });
+
 programCommand('rescue-token')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   .requiredOption('-i, --ico <string>')
