@@ -48,11 +48,14 @@ pub struct BuyToken<'info> {
         associated_token::mint = ico_mint,
         associated_token::authority = buyer,
         associated_token::token_program = ico_token_program,
+        space = UserPurchase::DATA_SIZE,
         payer = buyer,
     )]
     pub buyer_ico_account: Box<InterfaceAccount<'info, TokenAccount>>,
 
     #[account(mut,
+        bump,
+        seeds = [USER_PURCHASE_SEED.as_bytes(), ico_pot.key().to_bytes().as_ref()]
         associated_token::mint = ico_mint,
         associated_token::authority = ico_pot,
         associated_token::token_program = ico_token_program,
